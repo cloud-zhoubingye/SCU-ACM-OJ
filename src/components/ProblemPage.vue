@@ -113,23 +113,23 @@
           });
           return;
         }
-        const postData = {
-          prob_id: this.problemID,
-          language: this.language,
-          code: this.code
-        };
-        axios.post('/api/submitCode', postData, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
+        axios.get('/api/submit_code', {
+            params:{
+                prob_id: this.problemID,
+                language: this.language,
+                code: this.code,
+            },
+            headers: {
+            'Content-Type': 'application/json',
+            }
         })
           .then(response => {
             const data = response.data;
             this.timeCost = data.timeCost;
             this.memoryCost = data.memoryCost;
-            this.resultScore = data.resultScore;
             this.resultInformation = data.resultInformation;
             this.compileMessage = data.compileMessage;
+            this.judgeTime = new Date(data.judgeTime);
             this.$Modal.success({
               title: 'Result',
               content: 'Your code has been submitted successfully!'
@@ -189,21 +189,15 @@
       }
     },
     mounted() {
-      axios.get('/api/getProblem', {
-        params: {
-          prob: this.problemName
-        }
-      })
+      axios.get('/api/getProblemDetails', {
+            params: {
+                prob_name: this.problemName
+            }
+        })
         .then(response => {
-          const data = response.data;
-          this.problemDescription = data.problemDescription;
-          this.problemInputDescription = data.problemInputDescription;
-          this.problemOutputDescription = data.problemOutputDescription;
-          this.problemInputOutputSample = data.problemInputOutputSample;
-          this.timeLimit = data.timeLimit;
-          this.memoryLimit = data.memoryLimit;
-          this.difficultyLevel = data.difficultyLevel;
-          this.problemCategory = data.problemCategory;
+            const data = response.data;
+            this.timeLimit = data.timeLimit;
+            this.memoryLimit = data.memoryLimit;
         })
         .catch(error => {
           this.$Message.error('Failed to get ' + this.problemName + '\'s information!');

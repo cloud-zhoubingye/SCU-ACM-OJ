@@ -341,7 +341,7 @@
                     return;
                 }
 
-                axios.post('/api/savePersonInfo', {
+                axios.get('/api/savePersonInfo', {
                     userID: this.userID,
                     username: this.username,
                     nickname: this.nickname,
@@ -351,11 +351,18 @@
                 })
                 .then(response => {
                     console.log(response);
-                    localStorage.setItem('username', this.username);
-                    this.$Modal.success({
-                        title: 'Success',
-                        content: 'Successfully saved ' + this.username + '\'s personal information'
-                    });
+                    if (response.data.isModifySucc == 'success') {
+                        localStorage.setItem('username', this.username);
+                        this.$Modal.success({
+                            title: 'Success',
+                            content: 'Successfully saved ' + this.username + '\'s personal information'
+                        });
+                    } else {
+                        this.$Modal.error({
+                            title: 'Error',
+                            content: 'Failed to save ' + this.username + '\'s personal information'
+                        });
+                    }
                 })
                 .catch(error => {
                     console.log(error);

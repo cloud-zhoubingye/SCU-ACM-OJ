@@ -606,7 +606,8 @@
                 });
                 axios.get('/api/get_contest_rank_for_user', { 
                     params: { 
-                        userID: this.currentUserID, contestID: this.contestID 
+                        userID: this.currentUserID, 
+                        contestID: this.contestID 
                     } 
                 }) 
                 .then(response => { 
@@ -646,7 +647,8 @@
                 }); 
                 axios.get('/api/get_contest_rank_for_user', { 
                     params: { 
-                        userID: this.currentUserID, contestID: this.contestID 
+                        userID: this.currentUserID, 
+                        contestID: this.contestID 
                     } 
                 }) 
                 .then(response => { 

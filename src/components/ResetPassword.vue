@@ -98,11 +98,13 @@
                       this.$router.push({ path: '/failure' });
                   }
                   if (this.captcha_val == this.captcha_val_dict[this.captcha]) {
-                      axios.post('http://localhost:8080/reset', {
-                          email: this.email,
-                          username: this.username,
-                          password: this.password,
-                          email_captcha: this.email_captcha,
+                      axios.get('/api/reset_password', {
+                          params: {
+                            email: this.email,
+                            username: this.username,
+                            password: this.password,
+                            email_captcha: this.email_captcha,
+                          }
                       }).then((response) => {
                           console.log(response);
                           if (response.data.isResetSucc === 'success') {

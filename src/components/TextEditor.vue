@@ -1,3 +1,5 @@
+// This file is not used in the project.
+
 <template>
   <div style="border: 1px solid #ccc">
     <Toolbar

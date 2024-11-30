@@ -213,18 +213,18 @@
                 this.$router.push({ path: '/contest_details' });
             },
             get_contest(){
-                axios.get('/api/get_contest_details', {
+                axios.get('/api/get_contest_time', {
                     params: {
                         contest_name: this.recentContestTitle
                     }
                 })
                 .then(res => {
                     console.log(res.data);
-                    data = res.data;
+                    const data = res.data;
                     this.recentContestID = data.contest_id;
-                    this.recentContestStartTime = data.start_time;
-                    this.recentContestEndTime = data.end_time;
-                    this.recentContestCreateTime = data.create_time;
+                    this.recentContestStartTime = new Date(data.start_time);
+                    this.recentContestEndTime = new Date(data.end_time);
+                    this.recentContestCreateTime = new Date(data.create_time);
                 })
                 .catch(err => {
                     console.log(err);

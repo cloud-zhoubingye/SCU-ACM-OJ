@@ -156,7 +156,7 @@
                 }
             })
             .then(response => {
-                this.data = response.data;
+                this.data = response.data.judgeRecords;
             })
             .catch(error => {
                 console.log(error);
