@@ -251,3 +251,21 @@ password: string (encrypted)<br>
 email: string<br>
 gender: string<br>
 auth: int (Auth is int, which means 0: 'User', 1: 'Admin', 2: 'Super Admin')
+
+#### 15. Admin Routing Authentication
+- __URL__<br>
+'/api/admin_login_token'<br>
+- __Incoming Parameters__<br>
+token: string<br>
+- __Return Parameters__<br>
+admin_token_valid: string ('success' or 'fail')
+
+
+#### 16. User Routing Authentication
+- __URL__<br>
+'/api/user_login_token'<br>
+- __Incoming Parameters__<br>
+token: string<br>
+- __Return Parameters__<br>
+login_token_valid: string ('success' or 'fail')
+
