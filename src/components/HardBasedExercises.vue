@@ -77,6 +77,7 @@
                         <h3>Contest Title: {{ contestTitle }}</h3>
                         <h3>Start Time: {{ contestStartTime }}</h3>
                         <h3>End Time: {{ contestEndTime }}</h3>
+                        <h3>Current Time: <Time :time="currentTime" type="datetime" /></h3>
                     </Card>
                     <br>
                     <Card>
@@ -507,8 +508,9 @@
                 chosenProblemID: -1,
                 contestID: -1,
                 contestTitle: '',
-                contestStartTime: '',
-                contestEndTime: '',
+                contestStartTime: null,
+                contestEndTime: null,
+                currentTime: new Date()
             }
         },
         methods: {
@@ -525,6 +527,37 @@
                 this.$router.push({ path: '/person_info' });
             },
             handleView(row) {
+                const currentTime = this.currentTime; 
+                const contestStartTime = this.contestStartTime; 
+                const contestEndTime = this.contestEndTime;
+                if (!(contestStartTime instanceof Date) || isNaN(contestStartTime)) { 
+                    this.$Modal.error({ 
+                        title: 'Error', 
+                        content: 'Contest start time is invalid.' 
+                    });
+                    return; 
+                } 
+                if (!(contestEndTime instanceof Date) || isNaN(contestEndTime)) { 
+                    this.$Modal.error({ 
+                        title: 'Error', 
+                        content: 'Contest end time is invalid.' 
+                    });
+                    return;  
+                }
+                if (currentTime < contestStartTime) { 
+                    this.$Modal.error({ 
+                        title: 'Error', 
+                        content: 'The contest has not started yet.' 
+                    });
+                    return; 
+                } 
+                else if (currentTime > contestEndTime) { 
+                    this.$Modal.error({ 
+                        title: 'Error', 
+                        content: 'The contest has ended.' 
+                    });
+                    return;
+                }
                 this.chosenProblemID = row.id;
                 localStorage.setItem('chosenProblemID', this.chosenProblemID);
                 localStorage.setItem('chosenProblemTitle', row.title);
@@ -571,14 +604,84 @@
                     console.log(error);
                     this.$Message.error('Failed to get problems');
                 });
-
-                }
+                axios.get('/api/get_contest_rank_for_user', { 
+                    params: { 
+                        userID: this.currentUserID, contestID: this.contestID 
+                    } 
+                }) 
+                .then(response => { 
+                    this.contestRankForCurrentUser = response.data.contestRankForCurrentUser; 
+                }) 
+                .catch(error => { 
+                    console.log(error); 
+                    this.$Message.error('Failed to get contest rank for current user'); 
+                }); 
+                axios.get('/api/get_contest_rank', { 
+                    params: { 
+                        contestID: this.contestID 
+                    } 
+                }) 
+                .then(response => { 
+                    this.contestRank = response.data.contestRank; 
+                }) 
+                .catch(error => { 
+                    console.log(error); 
+                    this.$Message.error('Failed to get contest rank'); 
+                }); 
+            },
+            updateTime() {
+                this.currentTime = new Date();
+            },
+            updateData() { 
+                axios.get('/api/get_problems_by_contest', { 
+                    params: { 
+                        contestID: this.contestID 
+                    }
+                }) 
+                .then(response => { 
+                    this.problemList = response.data.problemList; 
+                }) 
+                .catch(error => { 
+                    console.log(error);  
+                }); 
+                axios.get('/api/get_contest_rank_for_user', { 
+                    params: { 
+                        userID: this.currentUserID, contestID: this.contestID 
+                    } 
+                }) 
+                .then(response => { 
+                    this.contestRankForCurrentUser = response.data.contestRankForCurrentUser; 
+                }) 
+                .catch(error => { 
+                    console.log(error); 
+                }); 
+                axios.get('/api/get_contest_rank', { 
+                    params: { 
+                        contestID: this.contestID 
+                    } 
+                }) 
+                .then(response => { 
+                    this.contestRank = response.data.contestRank; 
+                }) 
+                .catch(error => { 
+                    console.log(error); 
+                }); 
+            },
         },
         mounted() {
             this.contestID = localStorage.getItem('contest_id');
             this.contestTitle = localStorage.getItem('contest_name');
             this.contestStartTime = localStorage.getItem('contest_start_time');
             this.contestEndTime = localStorage.getItem('contest_end_time');
+            this.updateTime(); 
+            this.interval = setInterval(this.updateTime, 1000);
+            this.updateData();
+            this.dataInterval = setInterval(this.updateData, 5000);
+
+        },
+        beforeDestroy() { 
+            clearInterval(this.interval); 
+            clearInterval(this.dataInterval); 
         }
     }
 
