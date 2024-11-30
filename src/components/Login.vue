@@ -94,6 +94,7 @@ import axios from 'axios';
                         if (response.data.isLoginSucc == 'success') {
                             this.$Message.success('Login Success!');
                             localStorage.setItem('token', response.data.token);
+                            localStorage.setItem('username', this.username);
                             this.$router.push({ path: '/success' });
                         } else {
                             this.$router.push({ path: '/failure' });

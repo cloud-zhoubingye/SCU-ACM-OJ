@@ -233,6 +233,21 @@
             },
             
         },
+        mounted() {
+            axios.get('/api/get_contest_list', {
+                params: {
+                    username: localStorage.getItem('username')
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                this.contestList = res.data.contestList;
+            })
+            .catch(err => {
+                console.log(err);
+                this.$Message.error('Failed to get contest list');
+            });
+        }
     }
 
 </script>
