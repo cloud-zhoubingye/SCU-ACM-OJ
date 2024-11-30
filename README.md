@@ -22,5 +22,3 @@ SCU-ACM-OJ is a dedicated online judge platform tailored for university-level AC
 |Hao Li|Database operations|
 |Yiheng Zhang|Back-end business logic development|
 
-
-30/11/2024
