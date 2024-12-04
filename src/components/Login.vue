@@ -86,11 +86,9 @@ import axios from 'axios';
                 console.log(this.password);
                 
                 if (this.captcha_val == this.captcha_val_dict[this.captcha]) {
-                    axios.get('/api/user_login', {
-                        params: {
+                    axios.post('/api/user_login', {
                             username: this.username,
                             password: this.password
-                        }
                     }).then((response) => {
                         console.log(response);
                         if (response.data.isLoginSucc == 'success') {
